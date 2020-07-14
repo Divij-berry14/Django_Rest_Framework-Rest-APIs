@@ -25,33 +25,46 @@ from rest_framework import mixins
 #             return Response(serializer.data,status=status.HTTP_200_OK)
 #         return Response(serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
 
-class SnippetList(mixins.ListModelMixin,
-                  mixins.CreateModelMixin,
-                  generics.GenericAPIView):
+class SnippetList(generics.RetrieveAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
 
     def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+        return self.retrieve(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-# class SnippetDetail(mixins.RetrieveModelMixin,
-#                     mixins.UpdateModelMixin,
-#                     mixins.DestroyModelMixin,
-#                     generics.GenericAPIView):
+# class SnippetDetail(generics.RetrieveDestroyAPIView):
 #     queryset = Snippet.objects.all()
 #     serializer_class = SnippetSerializer
+#     # def get(self, request, *args, **kwargs):
+#     #     return self.list(request, *args, **kwargs)
 #
-#     def get(self, request, *args, **kwargs):
+#     def get(self,request,*args,**kwargs):
 #         return self.retrieve(request, *args, **kwargs)
 #
-#     def put(self, request, *args, **kwargs):
-#         return self.update(request, *args, **kwargs)
-#
 #     def delete(self, request, *args, **kwargs):
+#         # try:
+#         #     snippet = Snippet.objects.get(pk=pk)
+#         # except Snippet.DoesNotExist:
+#         #     pass
+#         # snippet.delete()
+#         # return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 #         return self.destroy(request, *args, **kwargs)
+
+class SnippetDetail(mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin,
+                    generics.GenericAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 #
 # @csrf_exempt
 # def snippet_list(request):
