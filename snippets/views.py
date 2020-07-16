@@ -8,52 +8,57 @@ from rest_framework.views import APIView
 from rest_framework.views import Response
 from rest_framework import status
 from rest_framework import mixins
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
 
-# class Snippet_list(APIView):
-#     def get(self,request):
-#         snippet=Snippet.objects.all()
-#         serializer=SnippetSerializer(snippet,many=True)
-#         return Response(serializer.data)
-#
-#     def post(self,request):
-#         print(request.data)
-#         serializer=SnippetSerializer(data=request.data)
-#         if serializer.is_valid():
-#             print(serializer.validated_data)
-#             serializer.save()
-#             print(serializer.data)
-#             return Response(serializer.data,status=status.HTTP_200_OK)
-#         return Response(serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
+class SnippetList(APIView):
+    permission_classes = (IsAuthenticated,)
 
-class SnippetList(generics.RetrieveAPIView):
-    queryset = Snippet.objects.all()
-    serializer_class = SnippetSerializer
+    def get(self,request):
+        snippet=Snippet.objects.all()
+        serializer=SnippetSerializer(snippet,many=True)
+        token=request.META['HTTP_AUTHORIZATION']
+        print(request.COOKIES)
+        # token1 = request.COOKIES['token']
+        data={
+            "data": serializer.data,
+            "token": token,
+            # "token1": token1
+        }
+        response=Response(data=data,status=status.HTTP_200_OK)
+        print(type(response))
+        response.set_cookie("token",token)
+        return response
+    def post(self,request):
+        print(request.data)
+        serializer=SnippetSerializer(data=request.data)
+        token = request.META['HTTP_AUTHORIZATION']
+        token1 = request.COOKIES['token']
+        if serializer.is_valid():
+            print(serializer.validated_data)
+            serializer.save()
+            print(serializer.data)
+            data = {
+                "data": serializer.data,
+                # "token": token,
+                "token1":token1
+            }
+            return Response(data=data, status=status.HTTP_200_OK)
+        return Response(serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-# class SnippetDetail(generics.RetrieveDestroyAPIView):
+# class SnippetList(generics.RetrieveAPIView):
 #     queryset = Snippet.objects.all()
 #     serializer_class = SnippetSerializer
-#     # def get(self, request, *args, **kwargs):
-#     #     return self.list(request, *args, **kwargs)
 #
-#     def get(self,request,*args,**kwargs):
+#     def get(self, request, *args, **kwargs):
 #         return self.retrieve(request, *args, **kwargs)
-#
-#     def delete(self, request, *args, **kwargs):
-#         # try:
-#         #     snippet = Snippet.objects.get(pk=pk)
-#         # except Snippet.DoesNotExist:
-#         #     pass
-#         # snippet.delete()
-#         # return HttpResponse(status=status.HTTP_404_NOT_FOUND)
-#         return self.destroy(request, *args, **kwargs)
+
 
 class SnippetDetail(mixins.RetrieveModelMixin,
                     mixins.UpdateModelMixin,
                     mixins.DestroyModelMixin,
                     generics.GenericAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
 
