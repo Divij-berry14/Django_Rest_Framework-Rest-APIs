@@ -2,7 +2,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from snippets.models import Snippet
-from snippets.serializers import SnippetSerializer
+from snippets.serializers import *
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.views import Response
@@ -10,6 +10,7 @@ from rest_framework import status
 from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
+from django.contrib.auth import login as django_login, logout as django_logout
 
 class SnippetList(APIView):
     permission_classes = (IsAuthenticated,)
@@ -18,7 +19,7 @@ class SnippetList(APIView):
         snippet=Snippet.objects.all()
         serializer=SnippetSerializer(snippet,many=True)
         token=request.META['HTTP_AUTHORIZATION']
-        print(request.COOKIES)
+        # print(request.COOKIES)
         # token1 = request.COOKIES['token']
         data={
             "data": serializer.data,
@@ -27,21 +28,29 @@ class SnippetList(APIView):
         }
         response=Response(data=data,status=status.HTTP_200_OK)
         print(type(response))
-        response.set_cookie("token",token)
+        # response.set_cookie("token",token)
         return response
     def post(self,request):
         print(request.data)
         serializer=SnippetSerializer(data=request.data)
-        token = request.META['HTTP_AUTHORIZATION']
-        token1 = request.COOKIES['token']
+        # token = request.META['HTTP_AUTHORIZATION']
+        # token1 = request.COOKIES['token']
+        if 'HTTP_REQUESTFROM' in request.META:
+            print("cookie")
+            token = request.COOKIES['token']
+        # print(request.COOKIES)
+        # token = request.COOKIES['token']
+        else:
+            print("header")
+            token = request.META['HTTP_AUTHORIZATION']
         if serializer.is_valid():
             print(serializer.validated_data)
             serializer.save()
             print(serializer.data)
             data = {
                 "data": serializer.data,
-                # "token": token,
-                "token1":token1
+                "token": token,
+                # "token1":token1
             }
             return Response(data=data, status=status.HTTP_200_OK)
         return Response(serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
@@ -70,50 +79,25 @@ class SnippetDetail(mixins.RetrieveModelMixin,
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
-#
-# @csrf_exempt
-# def snippet_list(request):
-#     """
-#     List all code snippets, or create a new snippet.
-#     """
-#     if request.method == 'GET':
-#         snippets = Snippet.objects.all()
-#         print(snippets)
-#         serializer = SnippetSerializer(snippets, many=True)
-#         print(serializer)
-#         print(JsonResponse(serializer.data, safe=False))
-#         return JsonResponse(serializer.data, safe=False)
-#
-#     elif request.method == 'POST':
-#         data = JSONParser().parse(request)
-#         serializer = SnippetSerializer(data=data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return JsonResponse(serializer.data, status=201)
-#         return JsonResponse(serializer.errors, status=400)
-#
-# @csrf_exempt
-# def snippet_detail(request, pk):
-#     """
-#     Retrieve, update or delete a code snippet.
-#     """
-#     try:
-#         snippet = Snippet.objects.get(pk=pk)
-#     except Snippet.DoesNotExist:
-#         return HttpResponse(status=404)
-#
-#     if request.method == 'GET':
-#         serializer = SnippetSerializer(snippet)
-#         return JsonResponse(serializer.data)
-#
-#     elif request.method == 'PUT':
-#         data = JSONParser().parse(request)
-#         serializer = SnippetSerializer(snippet, data=data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return JsonResponse(serializer.data)
-#         return JsonResponse(serializer.errors, status=400)
-#
-#     elif request.method == 'DELETE':
-#         snippet.delete()
-#         return HttpResponse(status=204)
+
+class LoginView(APIView):
+    def post(self,request):
+        serializer=LoginViewSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user=serializer.validated_data['user']
+        print(user)
+        django_login(request,user)
+        token,created=Token.objects.get_or_create(user=user)
+        data={
+            "name":user,
+            "token":token.key
+        }
+        return Response(data=data,status=status.HTTP_200_OK)
+
+class LogoutView(APIView):
+    permission_classes = (IsAuthenticated)
+    def post(self,request):
+        django_logout(request)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+

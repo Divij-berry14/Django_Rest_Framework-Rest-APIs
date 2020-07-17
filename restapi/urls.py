@@ -18,5 +18,5 @@ from django.contrib import admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('snippets.urls')),
+    path('api/v1/', include(('snippets.urls','snippets'),namespace="snippets")),
 ]

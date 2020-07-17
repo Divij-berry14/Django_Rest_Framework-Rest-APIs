@@ -6,5 +6,7 @@ urlpatterns = [
     path('snippets/<int:pk>/', views.SnippetDetail.as_view()),
     # path('snippetsDetail/', views.SnippetDetail.as_view())
     path('api-auth/', include('rest_framework.urls')),
-    path('api/token/',obtain_auth_token,name='obtain-token')
+    path('api/token/',obtain_auth_token,name='obtain-token'),
+    path('login/',views.LoginView.as_view()),
+    path('logout/',views.LogoutView.as_view())
 ]
