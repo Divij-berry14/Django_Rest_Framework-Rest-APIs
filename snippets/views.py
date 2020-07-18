@@ -11,6 +11,7 @@ from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import login as django_login, logout as django_logout
+from rest_framework.authentication import TokenAuthentication
 
 class SnippetList(APIView):
     permission_classes = (IsAuthenticated,)
@@ -18,12 +19,13 @@ class SnippetList(APIView):
     def get(self,request):
         snippet=Snippet.objects.all()
         serializer=SnippetSerializer(snippet,many=True)
-        token=request.META['HTTP_AUTHORIZATION']
-        # print(request.COOKIES)
+        # token=request.META['HTTP_AUTHORIZATION']
+        print(request.COOKIES)
         # token1 = request.COOKIES['token']
         data={
             "data": serializer.data,
-            "token": token,
+            # "token": token,
+            "user":request.user.pk
             # "token1": token1
         }
         response=Response(data=data,status=status.HTTP_200_OK)
@@ -86,18 +88,18 @@ class LoginView(APIView):
         serializer.is_valid(raise_exception=True)
         user=serializer.validated_data['user']
         print(user)
-        django_login(request,user)
+        django_login(request,user)   # default session logout in django
         token,created=Token.objects.get_or_create(user=user)
         data={
-            "name":user,
+            "name":user.pk,
             "token":token.key
         }
         return Response(data=data,status=status.HTTP_200_OK)
 
 class LogoutView(APIView):
-    permission_classes = (IsAuthenticated)
+    authentication_classes = (TokenAuthentication,)
     def post(self,request):
-        django_logout(request)
+        django_logout(request)   # default session logout in django
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

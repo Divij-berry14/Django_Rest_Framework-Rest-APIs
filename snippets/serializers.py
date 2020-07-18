@@ -20,7 +20,11 @@ class LoginViewSerializer(serializers.Serializer):
         if username and password:
             user=authenticate(username=username,password=password)
             if user:
-                data['user']=user
+                if user.is_active:
+                    data['user']=user
+                else:
+                    msg="user is deactivated"
+                    exceptions.ValidationError(msg)
             else:
                 msg="Unable to login"
                 raise exceptions.ValidationError(msg)
