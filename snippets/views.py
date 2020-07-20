@@ -25,7 +25,9 @@ class SnippetList(APIView):
         data={
             "data": serializer.data,
             # "token": token,
-            "user":request.user.pk
+            "userId":request.user.id,
+            "user":request.user.username,
+            "password":request.user.password
             # "token1": token1
         }
         response=Response(data=data,status=status.HTTP_200_OK)
