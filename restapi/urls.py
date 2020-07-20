@@ -18,5 +18,6 @@ from django.contrib import admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include(('snippets.urls','snippets'),namespace="snippets")),
+    path('api/v1/', include(('snippets.urls','snippets'),namespace="snippets")), #app.urls,appName
+    path('registration/',include(('Form.urls','Form'),namespace="form"))
 ]
