@@ -104,4 +104,5 @@ class LogoutView(APIView):
         django_logout(request)   # default session logout in django
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
+def res(request):
+    return HttpResponse("Welcome user")

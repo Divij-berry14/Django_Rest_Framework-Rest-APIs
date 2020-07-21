@@ -8,5 +8,6 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('api/token/',obtain_auth_token,name='obtain-token'),
     path('login/',views.LoginView.as_view()),
-    path('logout/',views.LogoutView.as_view())
+    path('logout/',views.LogoutView.as_view()),
+    path("res/",views.res,name="res")
 ]
