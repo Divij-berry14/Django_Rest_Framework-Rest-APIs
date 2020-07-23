@@ -1,6 +1,7 @@
-from django.shortcuts import render,HttpResponse
+from django.shortcuts import render,redirect
 from .models import Product
 from .forms import *
+from django.http import HttpResponse
 # from . import forms
 
 #DataFlair #Form #View Functions

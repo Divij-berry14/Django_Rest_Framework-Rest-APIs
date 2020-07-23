@@ -5,5 +5,5 @@ from Form import views
 urlpatterns = [
     path('', views.regform, name = 'registration form'),
     path("createProduct/",views.ProductCreateView,name="CreateProduct"),
-    # path("res/",views.res,name="res")
+    path("res/",views.res,name="res")
 ]

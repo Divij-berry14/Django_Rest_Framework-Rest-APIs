@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'snippets.apps.SnippetsConfig',
     'rest_framework.authtoken',
     "Form",
-    "CRUD",
+    'Crud',
 ]
 
 MIDDLEWARE = [
@@ -122,11 +122,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
+# DataFlair Static Files Settings
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static-files')
+#DataFlair #User_Uploaded_Files
+MEDIA_URL = 'media/'
+MEDIA_ROOT=os.path.join(BASE_DIR, 'media')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication'
     ]

@@ -20,5 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(('snippets.urls','snippets'),namespace="snippets")), #app.urls,appName
     path('registration/',include(('Form.urls','Form'),namespace="form")),
-    path('CRUD/',include('CRUD.urls','CRUD'),namespace="crud"),
+    path('',include(('Crud.urls','CRUD'),namespace="crud")),
 ]
