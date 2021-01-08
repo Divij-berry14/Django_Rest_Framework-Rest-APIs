@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from CRUD import views
 from restapi.settings import DEBUG, STATIC_URL, STATIC_ROOT, MEDIA_URL, MEDIA_ROOT
 from django.conf.urls.static import static
 urlpatterns = [

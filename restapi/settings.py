@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'snippets.apps.SnippetsConfig',
     'rest_framework.authtoken',
     "Form",
-    'Crud',
+    # 'CRUD',
 ]
 
 MIDDLEWARE = [

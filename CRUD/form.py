@@ -1,4 +1,4 @@
-from Crud.models import Book
+from CRUD.models import Book
 from django import forms
 
 class BookCreate(forms.ModelForm):
