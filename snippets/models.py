@@ -1,6 +1,7 @@
 from django.db import models
 from pygments.lexers import get_all_lexers
 from pygments.styles import get_all_styles
+from django.contrib.auth.models import User
 
 LEXERS = [item for item in get_all_lexers() if item[1]]
 LANGUAGE_CHOICES = sorted([(item[1][0], item[0]) for item in LEXERS])
@@ -17,4 +18,17 @@ class Snippet(models.Model):
 
     class Meta:
         ordering = ['created']
+
+class Question(models.Model):
+    title = models.TextField(null=False, blank=False)
+    status = models.CharField(default='inactive', max_length=10)
+    created_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
+    start_date = models.DateTimeField(null=True, blank=True)
+    end_date = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
 

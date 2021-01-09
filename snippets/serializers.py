@@ -3,6 +3,7 @@ from snippets.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
 from django.contrib.auth import authenticate
 from rest_framework import exceptions
 from django.contrib.auth.models import User
+from snippets.models import *
 
 class SnippetSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
@@ -29,6 +30,16 @@ class SnippetSerializer(serializers.Serializer):
         instance.style = validated_data.get('style', instance.style)
         instance.save()
         return instance
+
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = [
+            "id",
+            "title",
+            "status",
+            "created_by"
+        ]
 # class SnippetSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Snippet
