@@ -190,3 +190,11 @@ class Poll_detailsAPI(APIView):
         instance.delete()
         return Response(status=204)
 
+class get_title(APIView):
+    def get(self, request):
+        data = request.data.get("id")
+        print(data)
+        obj = Question.objects.filter(created_by=data)
+        print(obj)
+        serializer = QuestionSerializer(obj, many=True)
+        return Response(serializer.data, status=200)
