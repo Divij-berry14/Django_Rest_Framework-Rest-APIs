@@ -179,7 +179,7 @@ class Poll_detailsAPI(APIView):
     def put(self, request, id):
         data = request.data
         instance = self.get_object(id)
-        serializer = QuestionSerializer(instance,data=data)
+        serializer = QuestionSerializer(instance, data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=200)
