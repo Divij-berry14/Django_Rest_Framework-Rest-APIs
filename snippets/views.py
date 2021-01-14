@@ -4,13 +4,13 @@ from rest_framework.parsers import JSONParser
 from snippets.models import Snippet
 from snippets.serializers import *
 from rest_framework import generics
+from rest_framework import mixins
 from rest_framework.views import APIView
 from rest_framework.views import Response
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import exception_handler
 from rest_framework import status
-from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import login as django_login, logout as django_logout
@@ -201,3 +201,13 @@ class get_title(APIView):
         print(obj)
         serializer = QuestionSerializer(obj, many=True)
         return Response(serializer.data, status=200)
+
+class PollListView(generics.GenericAPIView, mixins.ListModelMixin):
+    serializer_class = QuestionSerializer
+    queryset = Question.objects.all()
+
+    def get(self, request):
+        return self.list(request)
+
+    def post(self, request):
+        return self.create(request)

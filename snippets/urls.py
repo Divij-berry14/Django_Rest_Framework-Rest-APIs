@@ -15,5 +15,6 @@ urlpatterns = [
     path('poll/<int:id>/', views.poll_details),
     path('pollAPI/', PollAPIView.as_view()),
     path('pollAPI/<int:id>/', Poll_detailsAPI.as_view()),
-    path('title/', get_title.as_view())
+    path('title/', get_title.as_view()),
+    path('generics/poll/', PollListView.as_view())
 ]
