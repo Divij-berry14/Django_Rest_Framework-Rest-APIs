@@ -130,6 +130,7 @@ def poll_details(request, id):
     try:
         instance = Question.objects.get(id=id)
         print(instance)
+        print(type(instance))
     except Question.DoesnotExist as e:
         return JsonResponse({"error": "Given Question does not found"}, status=400)
 
@@ -155,8 +156,9 @@ class PollAPIView(APIView):
         questions = Question.objects.all()   #Queryset
         print(questions)
         serializer = QuestionSerializer(questions, many=True)
-        return Response(serializer.data,status=200)
-    def post(self,request):
+        return Response(serializer.data, status=200)
+
+    def post(self, request):
         data = request.data
         serializer = QuestionSerializer(data=data)
         if serializer.is_valid():
@@ -170,6 +172,7 @@ class Poll_detailsAPI(APIView):
             return Question.objects.get(id=id)
         except Question.DoesnotExist as e:
             return Response({'error': "Given Question not found"}, status=400)
+
     def get(self, request, id):
         instance = self.get_object(id)
         print(instance)
